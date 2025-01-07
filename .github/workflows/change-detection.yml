@@ -16,7 +16,11 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          echo "files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          else
+            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          fi
 
       - name: Prepare dependency graph
         id: prepare
