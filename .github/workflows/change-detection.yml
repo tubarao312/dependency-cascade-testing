@@ -19,9 +19,9 @@ jobs:
         id: changed-files
         run: |
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+            echo "files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | tr '\n' ' ')" >> $GITHUB_OUTPUT
           else
-            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tr '\n' ' ')" >> $GITHUB_OUTPUT
           fi
 
       - name: Prepare dependency graph
@@ -35,8 +35,8 @@ jobs:
 
       - name: Print changed files
         run: |
-          echo $(echo '[".github/workflows/change-detection.yml"]' | jq -r '.[]' | tr '\n' ' ')
+          echo ${{ steps.changed-files.outputs.files }}
 
       - name: Query affected nodes 
         run: |
-          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g dependency-graph.json -f $(echo '${{ steps.changed-files.outputs.files }}' | jq -r '.[]' | tr '\n' ' ')
+          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g dependency-graph.json -f ${{ steps.changed-files.outputs.files }}
