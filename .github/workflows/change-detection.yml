@@ -1,4 +1,4 @@
-name: Dependency Cascade Example
+name: Dependency Cascade Example (Manual)
 
 on:
   push:
