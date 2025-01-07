@@ -1,0 +1,20 @@
+
+name: Dependency Cascade Example
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Query Affected Services
+        uses: taco-xyz/dependency-cascade-query-simple-action@v0.1.0
+        with:
+          head-ref: ${{ github.sha }}
+          before-sha: ${{ github.event.before }}
