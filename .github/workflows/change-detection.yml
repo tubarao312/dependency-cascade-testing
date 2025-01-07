@@ -27,8 +27,7 @@ jobs:
       - name: Prepare dependency graph
         id: prepare
         run: |
-          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main prepare -d . > dependency-graph.json
-          echo "graph=$(cat dependency-graph.json | jq -c .)" >> $GITHUB_OUTPUT
+          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main prepare -d . | tee dependency-graph.json >> $GITHUB_OUTPUT
 
       - name: Query affected nodes 
         run: |
