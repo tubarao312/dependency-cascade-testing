@@ -23,4 +23,3 @@ jobs:
       - name: Use the results
         run: |
           echo "Affected services: ${{ steps.affected.outputs.affected-services }}"
-          echo "Changed files: ${{ steps.affected.outputs.changed-files }}"
