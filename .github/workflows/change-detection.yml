@@ -35,4 +35,4 @@ jobs:
 
       - name: Query affected nodes 
         run: |
-          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g dependency-graph.json -f ${{ steps.changed-files.outputs.files }}
+          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g dependency-graph.json -f $(echo ${{ steps.changed-files.outputs.files }} | jq -r '.[]' | tr '\n' ' ')
