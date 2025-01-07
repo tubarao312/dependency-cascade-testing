@@ -19,9 +19,19 @@ jobs:
         id: changed-files
         run: |
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | tr '\n' ' ')" >> $GITHUB_OUTPUT
+            files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }})
+            args=""
+            for file in $files; do
+              args="$args -f $file"
+            done
+            echo "files=$args" >> $GITHUB_OUTPUT
           else
-            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tr '\n' ' ')" >> $GITHUB_OUTPUT
+            files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+            args=""
+            for file in $files; do
+              args="$args -f $file"
+            done
+            echo "files=$args" >> $GITHUB_OUTPUT
           fi
 
       - name: Prepare dependency graph
@@ -39,4 +49,4 @@ jobs:
 
       - name: Query affected nodes 
         run: |
-          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g dependency-graph.json -f ${{ steps.changed-files.outputs.files }}
+          docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g dependency-graph.json ${{ steps.changed-files.outputs.files }}
