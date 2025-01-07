@@ -1,4 +1,3 @@
-
 name: Dependency Cascade Example (Custom Action)
 
 on:
@@ -14,7 +13,14 @@ jobs:
           fetch-depth: 0
       
       - name: Query Affected Services
+        id: affected
         uses: taco-xyz/dependency-cascade-query-simple-action@v0.1.0
         with:
           head-ref: ${{ github.sha }}
           before-sha: ${{ github.event.before }}
+
+      # Example of using the output
+      - name: Use the results
+        run: |
+          echo "Affected services: ${{ steps.affected.outputs.affected-services }}"
+          echo "Changed files: ${{ steps.affected.outputs.changed-files }}"
