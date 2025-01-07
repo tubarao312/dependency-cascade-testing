@@ -16,7 +16,9 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          echo "files=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Prepare dependency graph
         id: prepare
@@ -25,4 +27,6 @@ jobs:
 
       - name: Query affected nodes 
         run: |
-          echo ${{ steps.prepare.outputs.graph }} | docker run --rm -i -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g - -f ${{ steps.changed-files.outputs.files }}
+          graph_json='${{ steps.prepare.outputs.graph }}'
+          readarray -t files <<< '${{ steps.changed-files.outputs.files }}'
+          docker run --rm -i -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main query -g "$graph_json" -f "${files[@]}"
