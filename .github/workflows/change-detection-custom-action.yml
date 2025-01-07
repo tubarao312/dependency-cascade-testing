@@ -1,3 +1,4 @@
+
 name: Dependency Cascade Example (Custom Action)
 
 on:
@@ -14,7 +15,7 @@ jobs:
       
       - name: Query Affected Services
         id: affected
-        uses: taco-xyz/dependency-cascade-query-simple-action@v0.1.0
+        uses: taco-xyz/dependency-cascade@v1.1.0
         with:
           head-ref: ${{ github.sha }}
           before-sha: ${{ github.event.before }}
