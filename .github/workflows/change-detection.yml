@@ -27,11 +27,11 @@ jobs:
       - name: Prepare dependency graph
         id: prepare
         run: |
-          # Save graph to file
           docker run --rm -v $(pwd):/workspace -w /workspace ghcr.io/tubarao312/dependency-cascade:main prepare -d . > dependency-graph.json
           
-          # For GitHub Actions output, we need to set a specific output key
-          echo "graph=$(cat dependency-graph.json)" >> $GITHUB_OUTPUT
+      - name: Print dependency graph
+        run: |
+          cat dependency-graph.json
 
       - name: Query affected nodes 
         run: |
