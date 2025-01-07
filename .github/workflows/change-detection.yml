@@ -1,7 +1,7 @@
 name: Dependency Cascade Example
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
 
 jobs:
